@@ -1,21 +1,29 @@
 package com.clinictrack.service;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
 public class GeminiService {
 
     private final RestClient restClient;
+    private final ObjectMapper objectMapper;
 
     public GeminiService(@Value("${gemini.api-key}") String apiKey,
-                         @Value("${gemini.url}") String url) {
+                         @Value("${gemini.url}") String url,
+                         ObjectMapper objectMapper) {
         this.restClient = RestClient.builder()
                 .baseUrl(url + "?key=" + apiKey)
                 .build();
+        this.objectMapper = objectMapper;
     }
 
     public String summarize(String text) {
@@ -28,17 +36,33 @@ public class GeminiService {
         );
 
         try {
-            Map response = restClient.post()
+            Map<String, Object> response = restClient.post()
                     .body(request)
                     .retrieve()
-                    .body(Map.class);
+                    .body(new ParameterizedTypeReference<Map<String, Object>>() {});
 
-            var candidates = (java.util.List<Map>) response.get("candidates");
+            if (response == null) return null;
+
+            var candidates = objectMapper.convertValue(
+                response.get("candidates"),
+                new TypeReference<List<Map<String, Object>>>() {}
+            );
+
             if (candidates != null && !candidates.isEmpty()) {
-                var content = (Map) candidates.get(0).get("content");
-                var parts = (java.util.List<Map>) content.get("parts");
-                if (parts != null && !parts.isEmpty()) {
-                    return (String) parts.get(0).get("text");
+                Map<String, Object> content = objectMapper.convertValue(
+                    candidates.get(0).get("content"),
+                    new TypeReference<Map<String, Object>>() {}
+                );
+
+                if (content != null) {
+                    var parts = objectMapper.convertValue(
+                        content.get("parts"),
+                        new TypeReference<List<Map<String, Object>>>() {}
+                    );
+
+                    if (parts != null && !parts.isEmpty()) {
+                        return (String) parts.get(0).get("text");
+                    }
                 }
             }
         } catch (Exception e) {

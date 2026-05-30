@@ -8,6 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.clinictrack.entity.Notification;
 
-public interface NotificationsRepository extends JpaRepository<Notification, UUID> {
+public interface NotificationRepository extends JpaRepository<Notification, UUID> {
     Page<Notification> findAllByOrderByCreatedAtDesc(Pageable pageable);
 }

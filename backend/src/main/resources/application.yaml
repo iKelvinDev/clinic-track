@@ -6,10 +6,9 @@ spring:
     import: optional:file:../.env[.properties]
 
   datasource:
-    url: jdbc:postgresql://${PGHOST:localhost}:${PGPORT:5432}/${PGDATABASE:${POSTGRES_DB}}
-    username: ${PGUSER:${POSTGRES_USER}}
-    password: ${PGPASSWORD:${POSTGRES_PASSWORD}}
-    driver-class-name: org.postgresql.Driver
+    url: jdbc:${DATABASE_PUBLIC_URL:postgresql://${PG_HOST:localhost}:${PG_PORT:5432}/${PG_DATABASE:${POSTGRES_DB:clinic_track}}}
+    username: ${PG_USER:${POSTGRES_USER:clinic_track}}
+    password: ${PG_PASSWORD:${POSTGRES_PASSWORD:clinic_track}}
   
   jpa:
     hibernate:

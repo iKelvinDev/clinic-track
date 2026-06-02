@@ -11,7 +11,7 @@ function App() {
     <Layout>
       <Routes>
         <Route path="/" element={<PatientList />} />
-        <Route path="patientes/new" element={<PatientForm />} />
+        <Route path="patients/new" element={<PatientForm />} />
         <Route path="patients/:id/edit" element={<PatientForm />} />
         <Route path="patients/:id" element={<PatientDetail />} />
         <Route path="notifications" element={<NotificationList />} />

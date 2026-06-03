@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { Box, Paper, Typography, TextField, Button, CircularProgress, Alert, } from '@mui/material'
 import { patientApi } from '../api/client'
+import { formatPhone, sanitizeName, formatEmail } from '../utils/masks'
 import type { PatientRequest } from '../types'
 
 export default function PatientForm() {
@@ -86,17 +87,17 @@ export default function PatientForm() {
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
           <TextField label="Nome" required fullWidth
             value={form.name}
-            onChange={(e) => setForm({ ...form, name: e.target.value })}
+            onChange={(e) => setForm({ ...form, name: sanitizeName(e.target.value) })}
             error={!!errors.name} helperText={errors.name} />
 
           <TextField label="Email" required fullWidth
             value={form.email}
-            onChange={(e) => setForm({ ...form, email: e.target.value })}
+            onChange={(e) => setForm({ ...form, email: formatEmail(e.target.value) })}
             error={!!errors.email} helperText={errors.email} />
 
           <TextField label="Telefone" fullWidth
             value={form.phone}
-            onChange={(e) => setForm({ ...form, phone: e.target.value })} />
+            onChange={(e) => setForm({ ...form, phone: formatPhone(e.target.value) })} />
 
           <TextField label="Data de Nascimento" type="date" fullWidth
             slotProps={{ inputLabel: { shrink: true } }}

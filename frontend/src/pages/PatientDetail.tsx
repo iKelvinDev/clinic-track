@@ -6,6 +6,7 @@ import {
 } from '@mui/material'
 import { patientApi, evolutionApi } from '../api/client'
 import type { Patient, ClinicalEvolution } from '../types'
+import { sanitizeName } from '../utils/masks'
 
 export default function PatientDetail() {
   const { id } = useParams()
@@ -163,7 +164,7 @@ export default function PatientDetail() {
             onChange={(e) => setDescription(e.target.value)} />
           <TextField label="Nome do Médico" fullWidth
             value={doctorName}
-            onChange={(e) => setDoctorName(e.target.value)} />
+            onChange={(e) => setDoctorName(sanitizeName(e.target.value))} />
           <Button variant="contained" onClick={handleSubmitEvolution}
             disabled={submitting || !description.trim()}>
             {submitting ? <CircularProgress size={24} /> : 'Adicionar Evolução'}
